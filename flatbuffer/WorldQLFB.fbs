@@ -1,0 +1,24 @@
+namespace WorldQLFB.StandardEvents;
+
+struct Vec3 {
+    x:float;
+    y:float;
+    z:float;
+}
+
+table Update {
+    instruction:string;
+    position:Vec3;
+    name:string;
+    uuid:string;
+    pitch:float;
+    yaw:float;
+    entityactions:[string];
+    params:[string];
+    numerical_params:[float];
+    world_name:string;
+    commands:[string];
+    senderid:int;
+}
+
+root_type Update;
