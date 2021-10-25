@@ -1,4 +1,4 @@
-namespace WorldqlFB.Messages;
+namespace WorldqlFb.Messages;
 
 struct Vec3d {
     x:double;
