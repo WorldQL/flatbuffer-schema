@@ -1,24 +1,36 @@
-namespace WorldQLFB.StandardEvents;
+namespace WorldqlFB.Messages;
 
-struct Vec3 {
-    x:float;
-    y:float;
-    z:float;
+struct Vec3d {
+    x:double;
+    y:double;
+    z:double;
 }
 
-table Update {
-    instruction:string;
-    position:Vec3;
-    name:string;
+table Record {
     uuid:string;
-    pitch:float;
-    yaw:float;
-    entityactions:[string];
-    params:[string];
-    numerical_params:[float];
+    position:Vec3d;
     world_name:string;
-    commands:[string];
-    senderid:int;
+    data:string;
+    flex:[ubyte] (flexbuffer);
 }
 
-root_type Update;
+table Entity {
+    uuid:string;
+    position:Vec3d;
+    world_name:string;
+    data:string;
+    flex:[ubyte] (flexbuffer);
+}
+
+table Message {
+    instruction:string;
+    sender_uuid:string;
+    world_name:string;
+    data:string;
+    records:[Record];
+    entities:[Entity];
+    position:Vec3d;
+    flex:[ubyte] (flexbuffer);
+}
+
+root_type Message;
