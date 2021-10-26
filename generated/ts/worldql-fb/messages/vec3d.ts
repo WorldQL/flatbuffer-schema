@@ -2,6 +2,8 @@
 
 import * as flatbuffers from 'flatbuffers';
 
+
+
 export class Vec3d {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
@@ -35,4 +37,36 @@ static createVec3d(builder:flatbuffers.Builder, x: number, y: number, z: number)
   return builder.offset();
 }
 
+
+unpack(): Vec3dT {
+  return new Vec3dT(
+    this.x(),
+    this.y(),
+    this.z()
+  );
+}
+
+
+unpackTo(_o: Vec3dT): void {
+  _o.x = this.x();
+  _o.y = this.y();
+  _o.z = this.z();
+}
+}
+
+export class Vec3dT {
+constructor(
+  public x: number = 0.0,
+  public y: number = 0.0,
+  public z: number = 0.0
+){}
+
+
+pack(builder:flatbuffers.Builder): flatbuffers.Offset {
+  return Vec3d.createVec3d(builder,
+    this.x,
+    this.y,
+    this.z
+  );
+}
 }

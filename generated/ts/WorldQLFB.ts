@@ -1,3 +1,4 @@
-export { Entity } from './worldql-fb/messages/entity';
-export { Record } from './worldql-fb/messages/record';
-export { Vec3d } from './worldql-fb/messages/vec3d';
+export { Entity, EntityT } from './worldql-fb/messages/entity';
+export { Message, MessageT } from './worldql-fb/messages/message';
+export { Record, RecordT } from './worldql-fb/messages/record';
+export { Vec3d, Vec3dT } from './worldql-fb/messages/vec3d';

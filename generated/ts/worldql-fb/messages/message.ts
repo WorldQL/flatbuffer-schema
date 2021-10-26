@@ -2,9 +2,9 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { Entity } from '../../worldql-fb/messages/entity';
-import { Record } from '../../worldql-fb/messages/record';
-import { Vec3d } from '../../worldql-fb/messages/vec3d';
+import { Entity, EntityT } from '../../worldql-fb/messages/entity';
+import { Record, RecordT } from '../../worldql-fb/messages/record';
+import { Vec3d, Vec3dT } from '../../worldql-fb/messages/vec3d';
 
 
 export class Message {
@@ -178,4 +178,65 @@ static finishSizePrefixedMessageBuffer(builder:flatbuffers.Builder, offset:flatb
   builder.finish(offset, undefined, true);
 }
 
+
+unpack(): MessageT {
+  return new MessageT(
+    this.instruction(),
+    this.senderUuid(),
+    this.worldName(),
+    this.data(),
+    this.bb!.createObjList(this.records.bind(this), this.recordsLength()),
+    this.bb!.createObjList(this.entities.bind(this), this.entitiesLength()),
+    (this.position() !== null ? this.position()!.unpack() : null),
+    this.bb!.createScalarList(this.flex.bind(this), this.flexLength())
+  );
+}
+
+
+unpackTo(_o: MessageT): void {
+  _o.instruction = this.instruction();
+  _o.senderUuid = this.senderUuid();
+  _o.worldName = this.worldName();
+  _o.data = this.data();
+  _o.records = this.bb!.createObjList(this.records.bind(this), this.recordsLength());
+  _o.entities = this.bb!.createObjList(this.entities.bind(this), this.entitiesLength());
+  _o.position = (this.position() !== null ? this.position()!.unpack() : null);
+  _o.flex = this.bb!.createScalarList(this.flex.bind(this), this.flexLength());
+}
+}
+
+export class MessageT {
+constructor(
+  public instruction: string|Uint8Array|null = null,
+  public senderUuid: string|Uint8Array|null = null,
+  public worldName: string|Uint8Array|null = null,
+  public data: string|Uint8Array|null = null,
+  public records: (RecordT)[] = [],
+  public entities: (EntityT)[] = [],
+  public position: Vec3dT|null = null,
+  public flex: (number)[] = []
+){}
+
+
+pack(builder:flatbuffers.Builder): flatbuffers.Offset {
+  const instruction = (this.instruction !== null ? builder.createString(this.instruction!) : 0);
+  const senderUuid = (this.senderUuid !== null ? builder.createString(this.senderUuid!) : 0);
+  const worldName = (this.worldName !== null ? builder.createString(this.worldName!) : 0);
+  const data = (this.data !== null ? builder.createString(this.data!) : 0);
+  const records = Message.createRecordsVector(builder, builder.createObjectOffsetList(this.records));
+  const entities = Message.createEntitiesVector(builder, builder.createObjectOffsetList(this.entities));
+  const flex = Message.createFlexVector(builder, this.flex);
+
+  Message.startMessage(builder);
+  Message.addInstruction(builder, instruction);
+  Message.addSenderUuid(builder, senderUuid);
+  Message.addWorldName(builder, worldName);
+  Message.addData(builder, data);
+  Message.addRecords(builder, records);
+  Message.addEntities(builder, entities);
+  Message.addPosition(builder, (this.position !== null ? this.position!.pack(builder) : 0));
+  Message.addFlex(builder, flex);
+
+  return Message.endMessage(builder);
+}
 }

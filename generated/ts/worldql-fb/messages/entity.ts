@@ -2,7 +2,7 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { Vec3d } from '../../worldql-fb/messages/vec3d';
+import { Vec3d, Vec3dT } from '../../worldql-fb/messages/vec3d';
 
 
 export class Entity {
@@ -105,4 +105,50 @@ static endEntity(builder:flatbuffers.Builder):flatbuffers.Offset {
   return offset;
 }
 
+
+unpack(): EntityT {
+  return new EntityT(
+    this.uuid(),
+    (this.position() !== null ? this.position()!.unpack() : null),
+    this.worldName(),
+    this.data(),
+    this.bb!.createScalarList(this.flex.bind(this), this.flexLength())
+  );
+}
+
+
+unpackTo(_o: EntityT): void {
+  _o.uuid = this.uuid();
+  _o.position = (this.position() !== null ? this.position()!.unpack() : null);
+  _o.worldName = this.worldName();
+  _o.data = this.data();
+  _o.flex = this.bb!.createScalarList(this.flex.bind(this), this.flexLength());
+}
+}
+
+export class EntityT {
+constructor(
+  public uuid: string|Uint8Array|null = null,
+  public position: Vec3dT|null = null,
+  public worldName: string|Uint8Array|null = null,
+  public data: string|Uint8Array|null = null,
+  public flex: (number)[] = []
+){}
+
+
+pack(builder:flatbuffers.Builder): flatbuffers.Offset {
+  const uuid = (this.uuid !== null ? builder.createString(this.uuid!) : 0);
+  const worldName = (this.worldName !== null ? builder.createString(this.worldName!) : 0);
+  const data = (this.data !== null ? builder.createString(this.data!) : 0);
+  const flex = Entity.createFlexVector(builder, this.flex);
+
+  Entity.startEntity(builder);
+  Entity.addUuid(builder, uuid);
+  Entity.addPosition(builder, (this.position !== null ? this.position!.pack(builder) : 0));
+  Entity.addWorldName(builder, worldName);
+  Entity.addData(builder, data);
+  Entity.addFlex(builder, flex);
+
+  return Entity.endEntity(builder);
+}
 }
