@@ -1,4 +1,5 @@
-
+#!/usr/bin/env bash
+rm -rf ./generated
 
 flatc --java -I flatbuffer -o ./generated/java flatbuffer/WorldQLFB.fbs
 flatc --cpp -I flatbuffer -o ./generated/cpp flatbuffer/WorldQLFB.fbs
