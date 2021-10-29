@@ -5,7 +5,6 @@
 #define FLATBUFFERS_GENERATED_WORLDQLFB_WORLDQLFB_MESSAGES_H_
 
 #include "flatbuffers/flatbuffers.h"
-#include "flatbuffers/flexbuffers.h"
 
 namespace WorldqlFb {
 namespace Messages {
@@ -20,6 +19,62 @@ struct EntityBuilder;
 
 struct Message;
 struct MessageBuilder;
+
+enum Instruction : uint8_t {
+  Instruction_Heartbeat = 0,
+  Instruction_ZeroMQHandshake = 1,
+  Instruction_ZeroMQPortAssign = 2,
+  Instruction_LocalMessage = 3,
+  Instruction_GlobalMessage = 4,
+  Instruction_RecordCreate = 5,
+  Instruction_RecordRead = 6,
+  Instruction_RecordUpdate = 7,
+  Instruction_RecordDelete = 8,
+  Instruction_RecordReply = 9,
+  Instruction_AreaSubscribe = 10,
+  Instruction_AreaUnsubscribe = 11,
+  Instruction_Unknown = 255,
+  Instruction_MIN = Instruction_Heartbeat,
+  Instruction_MAX = Instruction_Unknown
+};
+
+inline const Instruction (&EnumValuesInstruction())[13] {
+  static const Instruction values[] = {
+    Instruction_Heartbeat,
+    Instruction_ZeroMQHandshake,
+    Instruction_ZeroMQPortAssign,
+    Instruction_LocalMessage,
+    Instruction_GlobalMessage,
+    Instruction_RecordCreate,
+    Instruction_RecordRead,
+    Instruction_RecordUpdate,
+    Instruction_RecordDelete,
+    Instruction_RecordReply,
+    Instruction_AreaSubscribe,
+    Instruction_AreaUnsubscribe,
+    Instruction_Unknown
+  };
+  return values;
+}
+
+inline const char *EnumNameInstruction(Instruction e) {
+  switch (e) {
+    case Instruction_Heartbeat: return "Heartbeat";
+    case Instruction_ZeroMQHandshake: return "ZeroMQHandshake";
+    case Instruction_ZeroMQPortAssign: return "ZeroMQPortAssign";
+    case Instruction_LocalMessage: return "LocalMessage";
+    case Instruction_GlobalMessage: return "GlobalMessage";
+    case Instruction_RecordCreate: return "RecordCreate";
+    case Instruction_RecordRead: return "RecordRead";
+    case Instruction_RecordUpdate: return "RecordUpdate";
+    case Instruction_RecordDelete: return "RecordDelete";
+    case Instruction_RecordReply: return "RecordReply";
+    case Instruction_AreaSubscribe: return "AreaSubscribe";
+    case Instruction_AreaUnsubscribe: return "AreaUnsubscribe";
+    case Instruction_Unknown: return "Unknown";
+    default: return "";
+  }
+}
 
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(8) Vec3d FLATBUFFERS_FINAL_CLASS {
  private:
@@ -73,9 +128,6 @@ struct Record FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   const flatbuffers::Vector<uint8_t> *flex() const {
     return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_FLEX);
-  }
-  flexbuffers::Reference flex_flexbuffer_root() const {
-    return flexbuffers::GetRoot(flex()->Data(), flex()->size());
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -182,9 +234,6 @@ struct Entity FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::Vector<uint8_t> *flex() const {
     return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_FLEX);
   }
-  flexbuffers::Reference flex_flexbuffer_root() const {
-    return flexbuffers::GetRoot(flex()->Data(), flex()->size());
-  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_UUID) &&
@@ -270,25 +319,25 @@ struct Message FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef MessageBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_INSTRUCTION = 4,
-    VT_SENDER_UUID = 6,
-    VT_WORLD_NAME = 8,
-    VT_DATA = 10,
+    VT_PARAMETER = 6,
+    VT_SENDER_UUID = 8,
+    VT_WORLD_NAME = 10,
     VT_RECORDS = 12,
     VT_ENTITIES = 14,
     VT_POSITION = 16,
     VT_FLEX = 18
   };
-  const flatbuffers::String *instruction() const {
-    return GetPointer<const flatbuffers::String *>(VT_INSTRUCTION);
+  WorldqlFb::Messages::Instruction instruction() const {
+    return static_cast<WorldqlFb::Messages::Instruction>(GetField<uint8_t>(VT_INSTRUCTION, 0));
+  }
+  const flatbuffers::String *parameter() const {
+    return GetPointer<const flatbuffers::String *>(VT_PARAMETER);
   }
   const flatbuffers::String *sender_uuid() const {
     return GetPointer<const flatbuffers::String *>(VT_SENDER_UUID);
   }
   const flatbuffers::String *world_name() const {
     return GetPointer<const flatbuffers::String *>(VT_WORLD_NAME);
-  }
-  const flatbuffers::String *data() const {
-    return GetPointer<const flatbuffers::String *>(VT_DATA);
   }
   const flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Record>> *records() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Record>> *>(VT_RECORDS);
@@ -302,19 +351,15 @@ struct Message FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::Vector<uint8_t> *flex() const {
     return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_FLEX);
   }
-  flexbuffers::Reference flex_flexbuffer_root() const {
-    return flexbuffers::GetRoot(flex()->Data(), flex()->size());
-  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_INSTRUCTION) &&
-           verifier.VerifyString(instruction()) &&
+           VerifyField<uint8_t>(verifier, VT_INSTRUCTION) &&
+           VerifyOffset(verifier, VT_PARAMETER) &&
+           verifier.VerifyString(parameter()) &&
            VerifyOffset(verifier, VT_SENDER_UUID) &&
            verifier.VerifyString(sender_uuid()) &&
            VerifyOffset(verifier, VT_WORLD_NAME) &&
            verifier.VerifyString(world_name()) &&
-           VerifyOffset(verifier, VT_DATA) &&
-           verifier.VerifyString(data()) &&
            VerifyOffset(verifier, VT_RECORDS) &&
            verifier.VerifyVector(records()) &&
            verifier.VerifyVectorOfTables(records()) &&
@@ -332,17 +377,17 @@ struct MessageBuilder {
   typedef Message Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_instruction(flatbuffers::Offset<flatbuffers::String> instruction) {
-    fbb_.AddOffset(Message::VT_INSTRUCTION, instruction);
+  void add_instruction(WorldqlFb::Messages::Instruction instruction) {
+    fbb_.AddElement<uint8_t>(Message::VT_INSTRUCTION, static_cast<uint8_t>(instruction), 0);
+  }
+  void add_parameter(flatbuffers::Offset<flatbuffers::String> parameter) {
+    fbb_.AddOffset(Message::VT_PARAMETER, parameter);
   }
   void add_sender_uuid(flatbuffers::Offset<flatbuffers::String> sender_uuid) {
     fbb_.AddOffset(Message::VT_SENDER_UUID, sender_uuid);
   }
   void add_world_name(flatbuffers::Offset<flatbuffers::String> world_name) {
     fbb_.AddOffset(Message::VT_WORLD_NAME, world_name);
-  }
-  void add_data(flatbuffers::Offset<flatbuffers::String> data) {
-    fbb_.AddOffset(Message::VT_DATA, data);
   }
   void add_records(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Record>>> records) {
     fbb_.AddOffset(Message::VT_RECORDS, records);
@@ -369,10 +414,10 @@ struct MessageBuilder {
 
 inline flatbuffers::Offset<Message> CreateMessage(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> instruction = 0,
+    WorldqlFb::Messages::Instruction instruction = WorldqlFb::Messages::Instruction_Heartbeat,
+    flatbuffers::Offset<flatbuffers::String> parameter = 0,
     flatbuffers::Offset<flatbuffers::String> sender_uuid = 0,
     flatbuffers::Offset<flatbuffers::String> world_name = 0,
-    flatbuffers::Offset<flatbuffers::String> data = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Record>>> records = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Entity>>> entities = 0,
     const WorldqlFb::Messages::Vec3d *position = 0,
@@ -382,36 +427,35 @@ inline flatbuffers::Offset<Message> CreateMessage(
   builder_.add_position(position);
   builder_.add_entities(entities);
   builder_.add_records(records);
-  builder_.add_data(data);
   builder_.add_world_name(world_name);
   builder_.add_sender_uuid(sender_uuid);
+  builder_.add_parameter(parameter);
   builder_.add_instruction(instruction);
   return builder_.Finish();
 }
 
 inline flatbuffers::Offset<Message> CreateMessageDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const char *instruction = nullptr,
+    WorldqlFb::Messages::Instruction instruction = WorldqlFb::Messages::Instruction_Heartbeat,
+    const char *parameter = nullptr,
     const char *sender_uuid = nullptr,
     const char *world_name = nullptr,
-    const char *data = nullptr,
     const std::vector<flatbuffers::Offset<WorldqlFb::Messages::Record>> *records = nullptr,
     const std::vector<flatbuffers::Offset<WorldqlFb::Messages::Entity>> *entities = nullptr,
     const WorldqlFb::Messages::Vec3d *position = 0,
     const std::vector<uint8_t> *flex = nullptr) {
-  auto instruction__ = instruction ? _fbb.CreateString(instruction) : 0;
+  auto parameter__ = parameter ? _fbb.CreateString(parameter) : 0;
   auto sender_uuid__ = sender_uuid ? _fbb.CreateString(sender_uuid) : 0;
   auto world_name__ = world_name ? _fbb.CreateString(world_name) : 0;
-  auto data__ = data ? _fbb.CreateString(data) : 0;
   auto records__ = records ? _fbb.CreateVector<flatbuffers::Offset<WorldqlFb::Messages::Record>>(*records) : 0;
   auto entities__ = entities ? _fbb.CreateVector<flatbuffers::Offset<WorldqlFb::Messages::Entity>>(*entities) : 0;
   auto flex__ = flex ? _fbb.CreateVector<uint8_t>(*flex) : 0;
   return WorldqlFb::Messages::CreateMessage(
       _fbb,
-      instruction__,
+      instruction,
+      parameter__,
       sender_uuid__,
       world_name__,
-      data__,
       records__,
       entities__,
       position,

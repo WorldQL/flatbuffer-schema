@@ -15,18 +15,16 @@ public final class Message extends Table {
   public void __init(int _i, ByteBuffer _bb) { __reset(_i, _bb); }
   public Message __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public String instruction() { int o = __offset(4); return o != 0 ? __string(o + bb_pos) : null; }
-  public ByteBuffer instructionAsByteBuffer() { return __vector_as_bytebuffer(4, 1); }
-  public ByteBuffer instructionInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 4, 1); }
-  public String senderUuid() { int o = __offset(6); return o != 0 ? __string(o + bb_pos) : null; }
-  public ByteBuffer senderUuidAsByteBuffer() { return __vector_as_bytebuffer(6, 1); }
-  public ByteBuffer senderUuidInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 6, 1); }
-  public String worldName() { int o = __offset(8); return o != 0 ? __string(o + bb_pos) : null; }
-  public ByteBuffer worldNameAsByteBuffer() { return __vector_as_bytebuffer(8, 1); }
-  public ByteBuffer worldNameInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 8, 1); }
-  public String data() { int o = __offset(10); return o != 0 ? __string(o + bb_pos) : null; }
-  public ByteBuffer dataAsByteBuffer() { return __vector_as_bytebuffer(10, 1); }
-  public ByteBuffer dataInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 10, 1); }
+  public int instruction() { int o = __offset(4); return o != 0 ? bb.get(o + bb_pos) & 0xFF : 0; }
+  public String parameter() { int o = __offset(6); return o != 0 ? __string(o + bb_pos) : null; }
+  public ByteBuffer parameterAsByteBuffer() { return __vector_as_bytebuffer(6, 1); }
+  public ByteBuffer parameterInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 6, 1); }
+  public String senderUuid() { int o = __offset(8); return o != 0 ? __string(o + bb_pos) : null; }
+  public ByteBuffer senderUuidAsByteBuffer() { return __vector_as_bytebuffer(8, 1); }
+  public ByteBuffer senderUuidInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 8, 1); }
+  public String worldName() { int o = __offset(10); return o != 0 ? __string(o + bb_pos) : null; }
+  public ByteBuffer worldNameAsByteBuffer() { return __vector_as_bytebuffer(10, 1); }
+  public ByteBuffer worldNameInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 10, 1); }
   public WorldqlFb.Messages.Record records(int j) { return records(new WorldqlFb.Messages.Record(), j); }
   public WorldqlFb.Messages.Record records(WorldqlFb.Messages.Record obj, int j) { int o = __offset(12); return o != 0 ? obj.__assign(__indirect(__vector(o) + j * 4), bb) : null; }
   public int recordsLength() { int o = __offset(12); return o != 0 ? __vector_len(o) : 0; }
@@ -47,10 +45,10 @@ public final class Message extends Table {
   public ByteBuffer flexInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 18, 1); }
 
   public static void startMessage(FlatBufferBuilder builder) { builder.startTable(8); }
-  public static void addInstruction(FlatBufferBuilder builder, int instructionOffset) { builder.addOffset(0, instructionOffset, 0); }
-  public static void addSenderUuid(FlatBufferBuilder builder, int senderUuidOffset) { builder.addOffset(1, senderUuidOffset, 0); }
-  public static void addWorldName(FlatBufferBuilder builder, int worldNameOffset) { builder.addOffset(2, worldNameOffset, 0); }
-  public static void addData(FlatBufferBuilder builder, int dataOffset) { builder.addOffset(3, dataOffset, 0); }
+  public static void addInstruction(FlatBufferBuilder builder, int instruction) { builder.addByte(0, (byte)instruction, (byte)0); }
+  public static void addParameter(FlatBufferBuilder builder, int parameterOffset) { builder.addOffset(1, parameterOffset, 0); }
+  public static void addSenderUuid(FlatBufferBuilder builder, int senderUuidOffset) { builder.addOffset(2, senderUuidOffset, 0); }
+  public static void addWorldName(FlatBufferBuilder builder, int worldNameOffset) { builder.addOffset(3, worldNameOffset, 0); }
   public static void addRecords(FlatBufferBuilder builder, int recordsOffset) { builder.addOffset(4, recordsOffset, 0); }
   public static int createRecordsVector(FlatBufferBuilder builder, int[] data) { builder.startVector(4, data.length, 4); for (int i = data.length - 1; i >= 0; i--) builder.addOffset(data[i]); return builder.endVector(); }
   public static void startRecordsVector(FlatBufferBuilder builder, int numElems) { builder.startVector(4, numElems, 4); }

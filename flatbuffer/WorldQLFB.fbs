@@ -18,7 +18,7 @@ table Record {
     // *
     world_name:string;
     data:string;
-    flex:[ubyte] (flexbuffer);
+    flex:[ubyte];
 }
 
 table Entity {
@@ -29,21 +29,38 @@ table Entity {
     // *
     world_name:string;
     data:string;
-    flex:[ubyte] (flexbuffer);
+    flex:[ubyte];
+}
+
+enum Instruction : ubyte {
+    Heartbeat,
+    ZeroMQHandshake,
+    ZeroMQPortAssign,
+    LocalMessage,
+    GlobalMessage,
+    RecordCreate,
+    RecordRead,
+    RecordUpdate,
+    RecordDelete,
+    RecordReply,
+    AreaSubscribe,
+    AreaUnsubscribe,
+
+    Unknown = 255,
 }
 
 table Message {
     // *
-    instruction:string;
+    instruction:Instruction;
+    parameter:string;
     // This field is currently only used for serverbound messages.
     sender_uuid:string;
     // *
     world_name:string;
-    data:string;
     records:[Record];
     entities:[Entity];
     position:Vec3d;
-    flex:[ubyte] (flexbuffer);
+    flex:[ubyte];
 }
 
 root_type Message;
