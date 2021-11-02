@@ -22,27 +22,25 @@ struct MessageBuilder;
 
 enum Instruction : uint8_t {
   Instruction_Heartbeat = 0,
-  Instruction_ZeroMQHandshake = 1,
-  Instruction_ZeroMQPortAssign = 2,
-  Instruction_LocalMessage = 3,
-  Instruction_GlobalMessage = 4,
-  Instruction_RecordCreate = 5,
-  Instruction_RecordRead = 6,
-  Instruction_RecordUpdate = 7,
-  Instruction_RecordDelete = 8,
-  Instruction_RecordReply = 9,
-  Instruction_AreaSubscribe = 10,
-  Instruction_AreaUnsubscribe = 11,
+  Instruction_Handshake = 1,
+  Instruction_LocalMessage = 2,
+  Instruction_GlobalMessage = 3,
+  Instruction_RecordCreate = 4,
+  Instruction_RecordRead = 5,
+  Instruction_RecordUpdate = 6,
+  Instruction_RecordDelete = 7,
+  Instruction_RecordReply = 8,
+  Instruction_AreaSubscribe = 9,
+  Instruction_AreaUnsubscribe = 10,
   Instruction_Unknown = 255,
   Instruction_MIN = Instruction_Heartbeat,
   Instruction_MAX = Instruction_Unknown
 };
 
-inline const Instruction (&EnumValuesInstruction())[13] {
+inline const Instruction (&EnumValuesInstruction())[12] {
   static const Instruction values[] = {
     Instruction_Heartbeat,
-    Instruction_ZeroMQHandshake,
-    Instruction_ZeroMQPortAssign,
+    Instruction_Handshake,
     Instruction_LocalMessage,
     Instruction_GlobalMessage,
     Instruction_RecordCreate,
@@ -60,8 +58,7 @@ inline const Instruction (&EnumValuesInstruction())[13] {
 inline const char *EnumNameInstruction(Instruction e) {
   switch (e) {
     case Instruction_Heartbeat: return "Heartbeat";
-    case Instruction_ZeroMQHandshake: return "ZeroMQHandshake";
-    case Instruction_ZeroMQPortAssign: return "ZeroMQPortAssign";
+    case Instruction_Handshake: return "Handshake";
     case Instruction_LocalMessage: return "LocalMessage";
     case Instruction_GlobalMessage: return "GlobalMessage";
     case Instruction_RecordCreate: return "RecordCreate";

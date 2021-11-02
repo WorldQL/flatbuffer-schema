@@ -34,8 +34,7 @@ table Entity {
 
 enum Instruction : ubyte {
     Heartbeat,
-    ZeroMQHandshake,
-    ZeroMQPortAssign,
+    Handshake,
     LocalMessage,
     GlobalMessage,
     RecordCreate,
