@@ -13,12 +13,15 @@ struct Vec3d;
 
 struct Record;
 struct RecordBuilder;
+struct RecordT;
 
 struct Entity;
 struct EntityBuilder;
+struct EntityT;
 
 struct Message;
 struct MessageBuilder;
+struct MessageT;
 
 enum Instruction : uint8_t {
   Instruction_Heartbeat = 0,
@@ -102,7 +105,17 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(8) Vec3d FLATBUFFERS_FINAL_CLASS {
 };
 FLATBUFFERS_STRUCT_END(Vec3d, 24);
 
+struct RecordT : public flatbuffers::NativeTable {
+  typedef Record TableType;
+  std::string uuid{};
+  std::unique_ptr<WorldqlFb::Messages::Vec3d> position{};
+  std::string world_name{};
+  std::string data{};
+  std::vector<uint8_t> flex{};
+};
+
 struct Record FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef RecordT NativeTableType;
   typedef RecordBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_UUID = 4,
@@ -139,6 +152,9 @@ struct Record FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVector(flex()) &&
            verifier.EndTable();
   }
+  RecordT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(RecordT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<Record> Pack(flatbuffers::FlatBufferBuilder &_fbb, const RecordT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct RecordBuilder {
@@ -207,7 +223,19 @@ inline flatbuffers::Offset<Record> CreateRecordDirect(
       flex__);
 }
 
+flatbuffers::Offset<Record> CreateRecord(flatbuffers::FlatBufferBuilder &_fbb, const RecordT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
+struct EntityT : public flatbuffers::NativeTable {
+  typedef Entity TableType;
+  std::string uuid{};
+  std::unique_ptr<WorldqlFb::Messages::Vec3d> position{};
+  std::string world_name{};
+  std::string data{};
+  std::vector<uint8_t> flex{};
+};
+
 struct Entity FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef EntityT NativeTableType;
   typedef EntityBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_UUID = 4,
@@ -244,6 +272,9 @@ struct Entity FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVector(flex()) &&
            verifier.EndTable();
   }
+  EntityT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(EntityT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<Entity> Pack(flatbuffers::FlatBufferBuilder &_fbb, const EntityT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct EntityBuilder {
@@ -312,7 +343,22 @@ inline flatbuffers::Offset<Entity> CreateEntityDirect(
       flex__);
 }
 
+flatbuffers::Offset<Entity> CreateEntity(flatbuffers::FlatBufferBuilder &_fbb, const EntityT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
+struct MessageT : public flatbuffers::NativeTable {
+  typedef Message TableType;
+  WorldqlFb::Messages::Instruction instruction = WorldqlFb::Messages::Instruction_Heartbeat;
+  std::string parameter{};
+  std::string sender_uuid{};
+  std::string world_name{};
+  std::vector<std::unique_ptr<WorldqlFb::Messages::RecordT>> records{};
+  std::vector<std::unique_ptr<WorldqlFb::Messages::EntityT>> entities{};
+  std::unique_ptr<WorldqlFb::Messages::Vec3d> position{};
+  std::vector<uint8_t> flex{};
+};
+
 struct Message FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef MessageT NativeTableType;
   typedef MessageBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_INSTRUCTION = 4,
@@ -368,6 +414,9 @@ struct Message FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVector(flex()) &&
            verifier.EndTable();
   }
+  MessageT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(MessageT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<Message> Pack(flatbuffers::FlatBufferBuilder &_fbb, const MessageT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct MessageBuilder {
@@ -459,6 +508,131 @@ inline flatbuffers::Offset<Message> CreateMessageDirect(
       flex__);
 }
 
+flatbuffers::Offset<Message> CreateMessage(flatbuffers::FlatBufferBuilder &_fbb, const MessageT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
+inline RecordT *Record::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<RecordT>(new RecordT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void Record::UnPackTo(RecordT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = uuid(); if (_e) _o->uuid = _e->str(); }
+  { auto _e = position(); if (_e) _o->position = std::unique_ptr<WorldqlFb::Messages::Vec3d>(new WorldqlFb::Messages::Vec3d(*_e)); }
+  { auto _e = world_name(); if (_e) _o->world_name = _e->str(); }
+  { auto _e = data(); if (_e) _o->data = _e->str(); }
+  { auto _e = flex(); if (_e) { _o->flex.resize(_e->size()); std::copy(_e->begin(), _e->end(), _o->flex.begin()); } }
+}
+
+inline flatbuffers::Offset<Record> Record::Pack(flatbuffers::FlatBufferBuilder &_fbb, const RecordT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateRecord(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<Record> CreateRecord(flatbuffers::FlatBufferBuilder &_fbb, const RecordT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const RecordT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _uuid = _o->uuid.empty() ? 0 : _fbb.CreateString(_o->uuid);
+  auto _position = _o->position ? _o->position.get() : 0;
+  auto _world_name = _o->world_name.empty() ? 0 : _fbb.CreateString(_o->world_name);
+  auto _data = _o->data.empty() ? 0 : _fbb.CreateString(_o->data);
+  auto _flex = _o->flex.size() ? _fbb.CreateVector(_o->flex) : 0;
+  return WorldqlFb::Messages::CreateRecord(
+      _fbb,
+      _uuid,
+      _position,
+      _world_name,
+      _data,
+      _flex);
+}
+
+inline EntityT *Entity::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<EntityT>(new EntityT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void Entity::UnPackTo(EntityT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = uuid(); if (_e) _o->uuid = _e->str(); }
+  { auto _e = position(); if (_e) _o->position = std::unique_ptr<WorldqlFb::Messages::Vec3d>(new WorldqlFb::Messages::Vec3d(*_e)); }
+  { auto _e = world_name(); if (_e) _o->world_name = _e->str(); }
+  { auto _e = data(); if (_e) _o->data = _e->str(); }
+  { auto _e = flex(); if (_e) { _o->flex.resize(_e->size()); std::copy(_e->begin(), _e->end(), _o->flex.begin()); } }
+}
+
+inline flatbuffers::Offset<Entity> Entity::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EntityT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateEntity(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<Entity> CreateEntity(flatbuffers::FlatBufferBuilder &_fbb, const EntityT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const EntityT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _uuid = _o->uuid.empty() ? 0 : _fbb.CreateString(_o->uuid);
+  auto _position = _o->position ? _o->position.get() : 0;
+  auto _world_name = _o->world_name.empty() ? 0 : _fbb.CreateString(_o->world_name);
+  auto _data = _o->data.empty() ? 0 : _fbb.CreateString(_o->data);
+  auto _flex = _o->flex.size() ? _fbb.CreateVector(_o->flex) : 0;
+  return WorldqlFb::Messages::CreateEntity(
+      _fbb,
+      _uuid,
+      _position,
+      _world_name,
+      _data,
+      _flex);
+}
+
+inline MessageT *Message::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::unique_ptr<MessageT>(new MessageT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void Message::UnPackTo(MessageT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = instruction(); _o->instruction = _e; }
+  { auto _e = parameter(); if (_e) _o->parameter = _e->str(); }
+  { auto _e = sender_uuid(); if (_e) _o->sender_uuid = _e->str(); }
+  { auto _e = world_name(); if (_e) _o->world_name = _e->str(); }
+  { auto _e = records(); if (_e) { _o->records.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->records[_i] = std::unique_ptr<WorldqlFb::Messages::RecordT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = entities(); if (_e) { _o->entities.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->entities[_i] = std::unique_ptr<WorldqlFb::Messages::EntityT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = position(); if (_e) _o->position = std::unique_ptr<WorldqlFb::Messages::Vec3d>(new WorldqlFb::Messages::Vec3d(*_e)); }
+  { auto _e = flex(); if (_e) { _o->flex.resize(_e->size()); std::copy(_e->begin(), _e->end(), _o->flex.begin()); } }
+}
+
+inline flatbuffers::Offset<Message> Message::Pack(flatbuffers::FlatBufferBuilder &_fbb, const MessageT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateMessage(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<Message> CreateMessage(flatbuffers::FlatBufferBuilder &_fbb, const MessageT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const MessageT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _instruction = _o->instruction;
+  auto _parameter = _o->parameter.empty() ? 0 : _fbb.CreateString(_o->parameter);
+  auto _sender_uuid = _o->sender_uuid.empty() ? 0 : _fbb.CreateString(_o->sender_uuid);
+  auto _world_name = _o->world_name.empty() ? 0 : _fbb.CreateString(_o->world_name);
+  auto _records = _o->records.size() ? _fbb.CreateVector<flatbuffers::Offset<WorldqlFb::Messages::Record>> (_o->records.size(), [](size_t i, _VectorArgs *__va) { return CreateRecord(*__va->__fbb, __va->__o->records[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _entities = _o->entities.size() ? _fbb.CreateVector<flatbuffers::Offset<WorldqlFb::Messages::Entity>> (_o->entities.size(), [](size_t i, _VectorArgs *__va) { return CreateEntity(*__va->__fbb, __va->__o->entities[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _position = _o->position ? _o->position.get() : 0;
+  auto _flex = _o->flex.size() ? _fbb.CreateVector(_o->flex) : 0;
+  return WorldqlFb::Messages::CreateMessage(
+      _fbb,
+      _instruction,
+      _parameter,
+      _sender_uuid,
+      _world_name,
+      _records,
+      _entities,
+      _position,
+      _flex);
+}
+
 inline const WorldqlFb::Messages::Message *GetMessage(const void *buf) {
   return flatbuffers::GetRoot<WorldqlFb::Messages::Message>(buf);
 }
@@ -487,6 +661,18 @@ inline void FinishSizePrefixedMessageBuffer(
     flatbuffers::FlatBufferBuilder &fbb,
     flatbuffers::Offset<WorldqlFb::Messages::Message> root) {
   fbb.FinishSizePrefixed(root);
+}
+
+inline std::unique_ptr<WorldqlFb::Messages::MessageT> UnPackMessage(
+    const void *buf,
+    const flatbuffers::resolver_function_t *res = nullptr) {
+  return std::unique_ptr<WorldqlFb::Messages::MessageT>(GetMessage(buf)->UnPack(res));
+}
+
+inline std::unique_ptr<WorldqlFb::Messages::MessageT> UnPackSizePrefixedMessage(
+    const void *buf,
+    const flatbuffers::resolver_function_t *res = nullptr) {
+  return std::unique_ptr<WorldqlFb::Messages::MessageT>(GetSizePrefixedMessage(buf)->UnPack(res));
 }
 
 }  // namespace Messages
