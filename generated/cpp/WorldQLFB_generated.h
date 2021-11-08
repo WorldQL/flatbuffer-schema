@@ -174,7 +174,7 @@ struct RecordBuilder {
 inline flatbuffers::Offset<Record> CreateRecord(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> uuid = 0,
-    const WorldqlFb::Messages::Vec3d *position = 0,
+    const WorldqlFb::Messages::Vec3d *position = nullptr,
     flatbuffers::Offset<flatbuffers::String> world_name = 0,
     flatbuffers::Offset<flatbuffers::String> data = 0,
     flatbuffers::Offset<flatbuffers::Vector<uint8_t>> flex = 0) {
@@ -190,7 +190,7 @@ inline flatbuffers::Offset<Record> CreateRecord(
 inline flatbuffers::Offset<Record> CreateRecordDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *uuid = nullptr,
-    const WorldqlFb::Messages::Vec3d *position = 0,
+    const WorldqlFb::Messages::Vec3d *position = nullptr,
     const char *world_name = nullptr,
     const char *data = nullptr,
     const std::vector<uint8_t> *flex = nullptr) {
@@ -279,7 +279,7 @@ struct EntityBuilder {
 inline flatbuffers::Offset<Entity> CreateEntity(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> uuid = 0,
-    const WorldqlFb::Messages::Vec3d *position = 0,
+    const WorldqlFb::Messages::Vec3d *position = nullptr,
     flatbuffers::Offset<flatbuffers::String> world_name = 0,
     flatbuffers::Offset<flatbuffers::String> data = 0,
     flatbuffers::Offset<flatbuffers::Vector<uint8_t>> flex = 0) {
@@ -295,7 +295,7 @@ inline flatbuffers::Offset<Entity> CreateEntity(
 inline flatbuffers::Offset<Entity> CreateEntityDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *uuid = nullptr,
-    const WorldqlFb::Messages::Vec3d *position = 0,
+    const WorldqlFb::Messages::Vec3d *position = nullptr,
     const char *world_name = nullptr,
     const char *data = nullptr,
     const std::vector<uint8_t> *flex = nullptr) {
@@ -417,7 +417,7 @@ inline flatbuffers::Offset<Message> CreateMessage(
     flatbuffers::Offset<flatbuffers::String> world_name = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Record>>> records = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Entity>>> entities = 0,
-    const WorldqlFb::Messages::Vec3d *position = 0,
+    const WorldqlFb::Messages::Vec3d *position = nullptr,
     flatbuffers::Offset<flatbuffers::Vector<uint8_t>> flex = 0) {
   MessageBuilder builder_(_fbb);
   builder_.add_flex(flex);
@@ -439,7 +439,7 @@ inline flatbuffers::Offset<Message> CreateMessageDirect(
     const char *world_name = nullptr,
     const std::vector<flatbuffers::Offset<WorldqlFb::Messages::Record>> *records = nullptr,
     const std::vector<flatbuffers::Offset<WorldqlFb::Messages::Entity>> *entities = nullptr,
-    const WorldqlFb::Messages::Vec3d *position = 0,
+    const WorldqlFb::Messages::Vec3d *position = nullptr,
     const std::vector<uint8_t> *flex = nullptr) {
   auto parameter__ = parameter ? _fbb.CreateString(parameter) : 0;
   auto sender_uuid__ = sender_uuid ? _fbb.CreateString(sender_uuid) : 0;

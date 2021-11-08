@@ -2,6 +2,7 @@
 
 package WorldqlFb.Messages;
 
+@SuppressWarnings("unused")
 public final class Instruction {
   private Instruction() { }
   public static final int Heartbeat = 0;

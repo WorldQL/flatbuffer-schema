@@ -45,7 +45,7 @@ public final class Message extends Table {
   public ByteBuffer flexInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 18, 1); }
 
   public static void startMessage(FlatBufferBuilder builder) { builder.startTable(8); }
-  public static void addInstruction(FlatBufferBuilder builder, int instruction) { builder.addByte(0, (byte)instruction, (byte)0); }
+  public static void addInstruction(FlatBufferBuilder builder, int instruction) { builder.addByte(0, (byte) instruction, (byte) 0); }
   public static void addParameter(FlatBufferBuilder builder, int parameterOffset) { builder.addOffset(1, parameterOffset, 0); }
   public static void addSenderUuid(FlatBufferBuilder builder, int senderUuidOffset) { builder.addOffset(2, senderUuidOffset, 0); }
   public static void addWorldName(FlatBufferBuilder builder, int worldNameOffset) { builder.addOffset(3, worldNameOffset, 0); }
