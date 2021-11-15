@@ -35,17 +35,17 @@ table Entity {
 enum Instruction : ubyte {
     Heartbeat,
     Handshake,
-    LocalMessage,
+    PeerConnect,
+    PeerDisconnect,
+    AreaSubscribe,
+    AreaUnsubscribe,
     GlobalMessage,
+    LocalMessage,
     RecordCreate,
     RecordRead,
     RecordUpdate,
     RecordDelete,
     RecordReply,
-    AreaSubscribe,
-    AreaUnsubscribe,
-    PeerConnect,
-    PeerDisconnect,
 
     Unknown = 255,
 }
