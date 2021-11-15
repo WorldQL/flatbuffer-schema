@@ -44,6 +44,8 @@ enum Instruction : ubyte {
     RecordReply,
     AreaSubscribe,
     AreaUnsubscribe,
+    PeerConnect,
+    PeerDisconnect,
 
     Unknown = 255,
 }
