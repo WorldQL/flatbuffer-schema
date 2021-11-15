@@ -26,33 +26,37 @@ struct MessageT;
 enum Instruction : uint8_t {
   Instruction_Heartbeat = 0,
   Instruction_Handshake = 1,
-  Instruction_LocalMessage = 2,
-  Instruction_GlobalMessage = 3,
-  Instruction_RecordCreate = 4,
-  Instruction_RecordRead = 5,
-  Instruction_RecordUpdate = 6,
-  Instruction_RecordDelete = 7,
-  Instruction_RecordReply = 8,
-  Instruction_AreaSubscribe = 9,
-  Instruction_AreaUnsubscribe = 10,
+  Instruction_PeerConnect = 2,
+  Instruction_PeerDisconnect = 3,
+  Instruction_AreaSubscribe = 4,
+  Instruction_AreaUnsubscribe = 5,
+  Instruction_GlobalMessage = 6,
+  Instruction_LocalMessage = 7,
+  Instruction_RecordCreate = 8,
+  Instruction_RecordRead = 9,
+  Instruction_RecordUpdate = 10,
+  Instruction_RecordDelete = 11,
+  Instruction_RecordReply = 12,
   Instruction_Unknown = 255,
   Instruction_MIN = Instruction_Heartbeat,
   Instruction_MAX = Instruction_Unknown
 };
 
-inline const Instruction (&EnumValuesInstruction())[12] {
+inline const Instruction (&EnumValuesInstruction())[14] {
   static const Instruction values[] = {
     Instruction_Heartbeat,
     Instruction_Handshake,
-    Instruction_LocalMessage,
+    Instruction_PeerConnect,
+    Instruction_PeerDisconnect,
+    Instruction_AreaSubscribe,
+    Instruction_AreaUnsubscribe,
     Instruction_GlobalMessage,
+    Instruction_LocalMessage,
     Instruction_RecordCreate,
     Instruction_RecordRead,
     Instruction_RecordUpdate,
     Instruction_RecordDelete,
     Instruction_RecordReply,
-    Instruction_AreaSubscribe,
-    Instruction_AreaUnsubscribe,
     Instruction_Unknown
   };
   return values;
@@ -62,15 +66,17 @@ inline const char *EnumNameInstruction(Instruction e) {
   switch (e) {
     case Instruction_Heartbeat: return "Heartbeat";
     case Instruction_Handshake: return "Handshake";
-    case Instruction_LocalMessage: return "LocalMessage";
+    case Instruction_PeerConnect: return "PeerConnect";
+    case Instruction_PeerDisconnect: return "PeerDisconnect";
+    case Instruction_AreaSubscribe: return "AreaSubscribe";
+    case Instruction_AreaUnsubscribe: return "AreaUnsubscribe";
     case Instruction_GlobalMessage: return "GlobalMessage";
+    case Instruction_LocalMessage: return "LocalMessage";
     case Instruction_RecordCreate: return "RecordCreate";
     case Instruction_RecordRead: return "RecordRead";
     case Instruction_RecordUpdate: return "RecordUpdate";
     case Instruction_RecordDelete: return "RecordDelete";
     case Instruction_RecordReply: return "RecordReply";
-    case Instruction_AreaSubscribe: return "AreaSubscribe";
-    case Instruction_AreaUnsubscribe: return "AreaUnsubscribe";
     case Instruction_Unknown: return "Unknown";
     default: return "";
   }
