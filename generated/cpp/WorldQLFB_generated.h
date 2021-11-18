@@ -82,6 +82,39 @@ inline const char *EnumNameInstruction(Instruction e) {
   }
 }
 
+enum Replication : uint8_t {
+  Replication_ExceptSelf = 0,
+  Replication_IncludingSelf = 1,
+  Replication_OnlySelf = 2,
+  Replication_MIN = Replication_ExceptSelf,
+  Replication_MAX = Replication_OnlySelf
+};
+
+inline const Replication (&EnumValuesReplication())[3] {
+  static const Replication values[] = {
+    Replication_ExceptSelf,
+    Replication_IncludingSelf,
+    Replication_OnlySelf
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesReplication() {
+  static const char * const names[4] = {
+    "ExceptSelf",
+    "IncludingSelf",
+    "OnlySelf",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameReplication(Replication e) {
+  if (flatbuffers::IsOutRange(e, Replication_ExceptSelf, Replication_OnlySelf)) return "";
+  const size_t index = static_cast<size_t>(e);
+  return EnumNamesReplication()[index];
+}
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(8) Vec3d FLATBUFFERS_FINAL_CLASS {
  private:
   double x_;
@@ -357,6 +390,7 @@ struct MessageT : public flatbuffers::NativeTable {
   std::string parameter{};
   std::string sender_uuid{};
   std::string world_name{};
+  WorldqlFb::Messages::Replication replication = WorldqlFb::Messages::Replication_ExceptSelf;
   std::vector<std::unique_ptr<WorldqlFb::Messages::RecordT>> records{};
   std::vector<std::unique_ptr<WorldqlFb::Messages::EntityT>> entities{};
   std::unique_ptr<WorldqlFb::Messages::Vec3d> position{};
@@ -371,10 +405,11 @@ struct Message FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_PARAMETER = 6,
     VT_SENDER_UUID = 8,
     VT_WORLD_NAME = 10,
-    VT_RECORDS = 12,
-    VT_ENTITIES = 14,
-    VT_POSITION = 16,
-    VT_FLEX = 18
+    VT_REPLICATION = 12,
+    VT_RECORDS = 14,
+    VT_ENTITIES = 16,
+    VT_POSITION = 18,
+    VT_FLEX = 20
   };
   WorldqlFb::Messages::Instruction instruction() const {
     return static_cast<WorldqlFb::Messages::Instruction>(GetField<uint8_t>(VT_INSTRUCTION, 0));
@@ -387,6 +422,9 @@ struct Message FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   const flatbuffers::String *world_name() const {
     return GetPointer<const flatbuffers::String *>(VT_WORLD_NAME);
+  }
+  WorldqlFb::Messages::Replication replication() const {
+    return static_cast<WorldqlFb::Messages::Replication>(GetField<uint8_t>(VT_REPLICATION, 0));
   }
   const flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Record>> *records() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Record>> *>(VT_RECORDS);
@@ -409,6 +447,7 @@ struct Message FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(sender_uuid()) &&
            VerifyOffset(verifier, VT_WORLD_NAME) &&
            verifier.VerifyString(world_name()) &&
+           VerifyField<uint8_t>(verifier, VT_REPLICATION) &&
            VerifyOffset(verifier, VT_RECORDS) &&
            verifier.VerifyVector(records()) &&
            verifier.VerifyVectorOfTables(records()) &&
@@ -441,6 +480,9 @@ struct MessageBuilder {
   void add_world_name(flatbuffers::Offset<flatbuffers::String> world_name) {
     fbb_.AddOffset(Message::VT_WORLD_NAME, world_name);
   }
+  void add_replication(WorldqlFb::Messages::Replication replication) {
+    fbb_.AddElement<uint8_t>(Message::VT_REPLICATION, static_cast<uint8_t>(replication), 0);
+  }
   void add_records(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Record>>> records) {
     fbb_.AddOffset(Message::VT_RECORDS, records);
   }
@@ -470,6 +512,7 @@ inline flatbuffers::Offset<Message> CreateMessage(
     flatbuffers::Offset<flatbuffers::String> parameter = 0,
     flatbuffers::Offset<flatbuffers::String> sender_uuid = 0,
     flatbuffers::Offset<flatbuffers::String> world_name = 0,
+    WorldqlFb::Messages::Replication replication = WorldqlFb::Messages::Replication_ExceptSelf,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Record>>> records = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<WorldqlFb::Messages::Entity>>> entities = 0,
     const WorldqlFb::Messages::Vec3d *position = 0,
@@ -482,6 +525,7 @@ inline flatbuffers::Offset<Message> CreateMessage(
   builder_.add_world_name(world_name);
   builder_.add_sender_uuid(sender_uuid);
   builder_.add_parameter(parameter);
+  builder_.add_replication(replication);
   builder_.add_instruction(instruction);
   return builder_.Finish();
 }
@@ -492,6 +536,7 @@ inline flatbuffers::Offset<Message> CreateMessageDirect(
     const char *parameter = nullptr,
     const char *sender_uuid = nullptr,
     const char *world_name = nullptr,
+    WorldqlFb::Messages::Replication replication = WorldqlFb::Messages::Replication_ExceptSelf,
     const std::vector<flatbuffers::Offset<WorldqlFb::Messages::Record>> *records = nullptr,
     const std::vector<flatbuffers::Offset<WorldqlFb::Messages::Entity>> *entities = nullptr,
     const WorldqlFb::Messages::Vec3d *position = 0,
@@ -508,6 +553,7 @@ inline flatbuffers::Offset<Message> CreateMessageDirect(
       parameter__,
       sender_uuid__,
       world_name__,
+      replication,
       records__,
       entities__,
       position,
@@ -605,6 +651,7 @@ inline void Message::UnPackTo(MessageT *_o, const flatbuffers::resolver_function
   { auto _e = parameter(); if (_e) _o->parameter = _e->str(); }
   { auto _e = sender_uuid(); if (_e) _o->sender_uuid = _e->str(); }
   { auto _e = world_name(); if (_e) _o->world_name = _e->str(); }
+  { auto _e = replication(); _o->replication = _e; }
   { auto _e = records(); if (_e) { _o->records.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->records[_i] = std::unique_ptr<WorldqlFb::Messages::RecordT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = entities(); if (_e) { _o->entities.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->entities[_i] = std::unique_ptr<WorldqlFb::Messages::EntityT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = position(); if (_e) _o->position = std::unique_ptr<WorldqlFb::Messages::Vec3d>(new WorldqlFb::Messages::Vec3d(*_e)); }
@@ -623,6 +670,7 @@ inline flatbuffers::Offset<Message> CreateMessage(flatbuffers::FlatBufferBuilder
   auto _parameter = _o->parameter.empty() ? 0 : _fbb.CreateString(_o->parameter);
   auto _sender_uuid = _o->sender_uuid.empty() ? 0 : _fbb.CreateString(_o->sender_uuid);
   auto _world_name = _o->world_name.empty() ? 0 : _fbb.CreateString(_o->world_name);
+  auto _replication = _o->replication;
   auto _records = _o->records.size() ? _fbb.CreateVector<flatbuffers::Offset<WorldqlFb::Messages::Record>> (_o->records.size(), [](size_t i, _VectorArgs *__va) { return CreateRecord(*__va->__fbb, __va->__o->records[i].get(), __va->__rehasher); }, &_va ) : 0;
   auto _entities = _o->entities.size() ? _fbb.CreateVector<flatbuffers::Offset<WorldqlFb::Messages::Entity>> (_o->entities.size(), [](size_t i, _VectorArgs *__va) { return CreateEntity(*__va->__fbb, __va->__o->entities[i].get(), __va->__rehasher); }, &_va ) : 0;
   auto _position = _o->position ? _o->position.get() : 0;
@@ -633,6 +681,7 @@ inline flatbuffers::Offset<Message> CreateMessage(flatbuffers::FlatBufferBuilder
       _parameter,
       _sender_uuid,
       _world_name,
+      _replication,
       _records,
       _entities,
       _position,
