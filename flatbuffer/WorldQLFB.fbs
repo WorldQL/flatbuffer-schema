@@ -50,6 +50,13 @@ enum Instruction : ubyte {
     Unknown = 255,
 }
 
+enum Replication : ubyte {
+    // default
+    ExceptSelf,
+    IncludingSelf,
+    OnlySelf,
+}
+
 table Message {
     // *
     instruction:Instruction;
@@ -58,6 +65,8 @@ table Message {
     sender_uuid:string;
     // *
     world_name:string;
+    // Required for GlobalMessage and LocalMessage
+    replication:Replication;
     records:[Record];
     entities:[Entity];
     position:Vec3d;
